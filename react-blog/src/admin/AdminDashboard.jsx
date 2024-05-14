@@ -49,7 +49,7 @@ const AdminDashboard = () => {
 
 
     const columns = [
-
+ 
         {
             field: '_id',
             headerName: 'Post ID',
@@ -67,6 +67,7 @@ const AdminDashboard = () => {
             headerName: 'Image',
             width: 150,
             renderCell: (params) => (
+                // eslint-disable-next-line jsx-a11y/alt-text
                 <img width="40%" src={params.row.image.url} />
             )
 
@@ -87,12 +88,7 @@ const AdminDashboard = () => {
                 params.row.comments.length
             )
         },
-        {
-            field: 'postedBy',
-            headerName: 'Posted by',
-            width: 150,
-            valueGetter: (data) => data.row.postedBy.name
-        },
+       
         {
             field: 'createdAt',
             headerName: 'Create At',

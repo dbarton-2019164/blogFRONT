@@ -1,15 +1,14 @@
 import React, { useEffect } from 'react'
 import { Sidebar, Menu, MenuItem, menuClasses } from 'react-pro-sidebar';
-import DashboardIcon from '@mui/icons-material/Dashboard';
+import DashboardIcon from '@mui/icons-material/Dashboard'; 
 import { Box } from '@mui/material';
 import PostAddIcon from '@mui/icons-material/PostAdd';
-import Person3Icon from '@mui/icons-material/Person3';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { userLogoutAction, userProfileAction } from '../../redux/actions/userAction';
 import { useNavigate } from 'react-router-dom';
 import LoginIcon from '@mui/icons-material/Login';
-
+import HomeIcon from '@mui/icons-material/Home';
 
 const SidebarAdm = () => {
     const { userInfo } = useSelector(state => state.signIn);
@@ -63,6 +62,7 @@ const SidebarAdm = () => {
                             {
                                 userInfo && userInfo.role === 'admin' ?
                                     <>
+                                        <MenuItem component={<Link to="/" />} icon={<HomeIcon  />}> Home </MenuItem>
                                         <MenuItem component={<Link to="/admin/dashboard" />} icon={<DashboardIcon />}> Dashboard </MenuItem>
                                         <MenuItem component={<Link to="/admin/post/create" />} icon={<PostAddIcon />}> Crear publicaciones </MenuItem>
                                     </> :

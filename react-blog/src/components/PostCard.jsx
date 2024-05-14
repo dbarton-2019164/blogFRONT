@@ -33,29 +33,7 @@ const PostCard = ({
 
     const { userInfo } = useSelector(state => state.signIn);
 
-    //Dar like
-    const addLike = async () => {
-        try {
-            const { data } = await axios.put(`http://127.0.0.1:8080/blog/v1/post/addlike/${id}`);
-            
-        } catch (error) {
-            console.log(error.response.data.error);
-            toast.error(error.response.data.error)
-        }
-    }
 
-
-
-    //Quitar el like
-    const removeLike = async () => {
-        try {
-            const { data } = await axios.put(`http://127.0.0.1:8080/blog/v1/post/removelike/${id}`);
-      
-        } catch (error) {
-            console.log(error.response.data.error);
-            toast.error(error.response.data.error)
-        }
-    }
 
 
     return (
@@ -63,7 +41,7 @@ const PostCard = ({
             <CardHeader
                 avatar={
                     <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-                        R
+                        ?
                     </Avatar>
                 }
 
@@ -90,27 +68,15 @@ const PostCard = ({
             </CardContent>
             <CardActions >
                 <Box sx={{ width: '100%', display: 'flex', justifyContent: 'space-between' }}>
-                    <Box>
+                    <Link to={`/post/${id}`}>
+                        <Box >
+                            {comments}
+                            <IconButton aria-label="comment">
+                                <CommentIcon />
+                            </IconButton>
+                        </Box>
+                    </Link>
 
-                        {
-                            likesId.includes(userInfo && userInfo.id) ?
-                                <IconButton onClick={removeLike} aria-label="add to favorites">
-                                    <FavoriteIcon sx={{ color: 'red' }} />
-                                </IconButton>
-                                :
-                                <IconButton onClick={addLike} aria-label="add to favorites">
-                                    <FavoriteBorderIcon sx={{ color: 'red' }} />
-                                </IconButton>
-                        }
-
-                        {likes} Likes 
-                    </Box>
-                    <Box>
-                        {comments}
-                        <IconButton aria-label="comment">
-                            <CommentIcon />
-                        </IconButton>
-                    </Box>
                 </Box>
 
             </CardActions>

@@ -38,16 +38,7 @@ const Home = () => {
         showPosts();
     }, []);
 
-    useEffect(() => {
-        socket.on('add-like', (newPosts) => {
-            setPostAddLike(newPosts);
-            setPostRemoveLike('');
-        });
-        socket.on('remove-like', (newPosts) => {
-            setPostRemoveLike(newPosts);
-            setPostAddLike('');
-        });
-    }, [])
+   
 
     let uiPosts = postAddLike.length > 0 ? postAddLike : postRemoveLike.length > 0 ? postRemoveLike : posts;
 
@@ -71,8 +62,7 @@ const Home = () => {
                                                 image={post.image ? post.image.url : ''}
                                                 subheader={moment(post.createdAt).format('MMMM DD, YYYY')}
                                                 comments={post.comments.length}
-                                                likes={post.likes.length}
-                                                likesId={post.likes}
+                                    
                                                 showPosts={showPosts}
                                             />
                                         </Grid>

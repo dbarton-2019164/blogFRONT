@@ -147,13 +147,6 @@ const Navbar = () => {
                             </Link>
                         </Typography>
 
-                        <Typography
-                            onClick={handleCloseNavMenu}
-                            sx={{ my: 2, color: 'white', display: 'block' }}>
-                            <Link to="/register" style={{ color: 'white', textDecoration: "none" }}>
-                                Register
-                            </Link>
-                        </Typography>
 
 
                     </Box>
@@ -195,9 +188,7 @@ const Navbar = () => {
                             <MenuItem onClick={handleCloseUserMenu}>
                                 <Typography textAlign="center"><Link style={{ textDecoration: "none" }} to="/admin/dashboard">Admin</Link></Typography>
                             </MenuItem>
-                            <MenuItem onClick={handleCloseUserMenu}>
-                                <Typography textAlign="center"><Link style={{ textDecoration: "none" }} to="/user/dashboard">User </Link></Typography>
-                            </MenuItem>
+                            
                             {
                                 userInfo ?
                                     <MenuItem onClick={logOutUser}>

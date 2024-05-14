@@ -12,7 +12,6 @@ import AdminRoute from './components/AdminRoute';
 import UserRoute from './components/UserRoute';
 import CreatePost from './admin/CreatePost';
 import LogIn from './pages/LogIn';
-import Register from './pages/Register';
 import Layout from './admin/global/Layout'
 import EditPost from './admin/EditPost';
 import UserDashboard from './user/UserDashboard';
@@ -35,7 +34,6 @@ const App = () => {
             <Routes>
               <Route path='/' element={<Home />} />
               <Route path='/login' element={<LogIn />} />
-              <Route path='/register' element={<Register />} />
               <Route path='/post/:id' element={<SinglePost />} />
               <Route path='*' element={<NotFound />} />
               <Route path='/admin/dashboard' element={<AdminRoute><AdminDashboardHOC /></AdminRoute>} />

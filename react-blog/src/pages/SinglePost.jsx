@@ -1,41 +1,26 @@
+import React, { useEffect, useState } from 'react';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
 import CardMedia from '@mui/material/CardMedia';
 import CardContent from '@mui/material/CardContent';
-import CardActions from '@mui/material/CardActions';
-import Avatar from '@mui/material/Avatar';
-import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import { red } from '@mui/material/colors';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import CommentIcon from '@mui/icons-material/Comment';
-import ShareIcon from '@mui/icons-material/Share';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { Box, Button, Divider } from '@mui/material';
+import { Box, Button, Divider, Avatar } from '@mui/material';
 import axios from 'axios';
 import { Link, useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import moment from 'moment';
 import Loader from '../components/Loader';
-import { useSelector } from 'react-redux';
-// Elimina la importación de TextareaAutosize
 import { toast } from 'react-toastify';
 import CommentList from '../components/CommentList';
 import { io } from 'socket.io-client';
 
 const socket = io('/', {
     reconnection: true
-})
-
+});
 
 const SinglePost = () => {
-
-
-    const { userInfo } = useSelector(state => state.signIn);
-
+    const [name, setName] = useState('');
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [image, setImage] = useState('');
@@ -44,9 +29,8 @@ const SinglePost = () => {
     const [comment, setComment] = useState('');
     const [comments, setComments] = useState([]);
     const [commentsRealTime, setCommentsRealTime] = useState([]);
-
     const { id } = useParams();
-   
+
     const displaySinglePost = async () => {
         setLoading(true);
         try {
@@ -57,7 +41,6 @@ const SinglePost = () => {
             setCreatedAt(data.post.createdAt);
             setLoading(false);
             setComments(data.post.comments);
-
         } catch (error) {
             console.log(error);
         }
@@ -65,21 +48,22 @@ const SinglePost = () => {
 
     useEffect(() => {
         displaySinglePost();
-    }, [])
+    }, []); 
 
     useEffect(() => {
         socket.on('new-comment', (newComment) => {
             setCommentsRealTime(newComment);
         })
-    }, [])
+    }, []);
 
     const addComment = async (e) => {
         e.preventDefault();
         try {
-            const { data } = await axios.put(`http://127.0.0.1:8080/blog/v1/post/comment/${id}`, { comment });
+            const { data } = await axios.put(`http://127.0.0.1:8080/blog/v1/post/comment/${id}`, { name, comment });
             if (data.success === true) {
+                setName('');
                 setComment('');
-                toast.success("Comentario publicado");
+                toast.success("Comment posted");
                 socket.emit('comment', data.post.comments);
             }
         } catch (error) {
@@ -99,16 +83,7 @@ const SinglePost = () => {
                         <>
                             <Card sx={{ maxWidth: 1000, height: '100%' }}>
                                 <CardHeader
-                                    avatar={
-                                        <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-                                            R
-                                        </Avatar>
-                                    }
-                                    action={
-                                        <IconButton aria-label="settings">
-                                            <MoreVertIcon />
-                                        </IconButton>
-                                    }
+                                    avatar={<Avatar aria-label="recipe">R</Avatar>}
                                     title={title}
                                     subheader={moment(createdAt).format('MMMM DD, YYYY')}
                                 />
@@ -123,44 +98,31 @@ const SinglePost = () => {
                                         <Box component='span' dangerouslySetInnerHTML={{ __html: content }}></Box>
                                     </Typography>
                                     <Divider variant="inset" />
-                                    {/* add comment list */}
-                                    {
-                                        comments.length === 0 ? '' :
-                                            <Typography variant='h5' sx={{ pt: 3, mb: 2 }}>
-                                                Comments:
-                                            </Typography>
-                                    }
-
-                                    {
-                                        uiCommentUpdate.map(comment => (
-                                            <CommentList key={comment._id} name={comment.postedBy.name} text={comment.text} />
-
-                                        ))
-                                    }
-
-                                    {
-                                        userInfo ?
-                                            <>
-                                                <Box sx={{ pt: 1, pl: 3, pb: 3, bgcolor: "#fafafa" }}>
-                                                    <h2>Add your comment here!</h2>
-                                                    <form onSubmit={addComment}>
-                                                        {/* Elimina TextareaAutosize */}
-                                                        <textarea
-                                                            onChange={(e) => setComment(e.target.value)}
-                                                            value={comment}
-                                                            placeholder="Agregar un comentario..."
-                                                            style={{ width: 500, padding: "5px" }}
-                                                        />
-                                                        <Box sx={{ pt: 1 }}>
-                                                            <Button type='submit' variant='contained'>Comentar</Button>
-                                                        </Box>
-                                                    </form>
-                                                </Box>
-                                            </>
-                                            : <>
-                                                <Link to='/login'>Inicia sesión para comentar</Link>
-                                            </>
-                                    }
+                                    {comments.length === 0 ? '' : <Typography variant='h5' sx={{ pt: 3, mb: 2 }}>Comentarios:</Typography>}
+                                    {uiCommentUpdate.map(comment => (
+                                        <CommentList key={comment._id} name={comment.name} text={comment.text} />
+                                    ))}
+                                    <Box sx={{ pt: 1, pl: 3, pb: 3, bgcolor: "#fafafa" }}>
+                                        <h2>Comenta aquí!</h2>
+                                        <form onSubmit={addComment}>
+                                            <input
+                                                type="text"
+                                                value={name}
+                                                onChange={(e) => setName(e.target.value)}
+                                                placeholder="Your name"
+                                                style={{ width: 300, padding: "5px", marginRight: "10px" }}
+                                            />
+                                            <textarea
+                                                onChange={(e) => setComment(e.target.value)}
+                                                value={comment}
+                                                placeholder="Add a comment..."
+                                                style={{ width: 500, padding: "5px" }}
+                                            />
+                                            <Box sx={{ pt: 1 }}>
+                                                <Button type='submit' variant='contained'>Comentar</Button>
+                                            </Box>
+                                        </form>
+                                    </Box>
                                 </CardContent>
                             </Card>
                         </>
